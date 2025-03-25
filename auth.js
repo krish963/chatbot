@@ -11,23 +11,27 @@ const users = [
 ];
 
 app.post("/webhook", (req, res) => {
+    const tag = req.body.queryResult.intent.name;
     const parameters = req.body.queryResult.parameters;
-    const sapCode = parameters.sapCode || null;
-    const password = parameters.password || null;
 
-    const user = users.find((u) => 
-        u.sapCode === sapCode &&
-        u.password === password
-    );
+    if(tag === "auth_user"){
+        const sapCode = parameters.sapCode || null;
+        const password = parameters.password || null;
 
-    if (user) {
-        res.status(200).json({
-            fulfillmentText: 'Login Successful!' 
-        });
-    } else{
-        res.status(422).json({
-            fulfillmentText: 'Invalid Credentials. Please try again!' 
-        });
+        const user = users.find((u) => 
+            u.sapCode === sapCode &&
+            u.password === password
+        );
+
+        if (user) {
+            res.status(200).json({
+                fulfillmentText: 'Login Successful!' 
+            });
+        } else{
+            res.status(422).json({
+                fulfillmentText: 'Invalid Credentials. Please try again!' 
+            });
+        }    
     }
 });
 
